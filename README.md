@@ -1,6 +1,6 @@
 # dine-backend
 
-The backend for DINE
+The backend for Dine
 
 ## Getting started
 

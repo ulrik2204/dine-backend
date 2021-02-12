@@ -34,13 +34,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'dine_backend.apps.DineBackendConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dine_backend.apps.DineBackendConfig'
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

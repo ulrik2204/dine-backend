@@ -4,8 +4,6 @@ from .serializers import DinnerSerializer
 from .models import Dinner
 
 
-class DinnerView(generics.CreateAPIView): 
+class DinnerView(generics.CreateAPIView):
     queryset = Dinner.objects.all()
-    serializers_class = DinnerSerializer
-
-
+    serializer_class = DinnerSerializer

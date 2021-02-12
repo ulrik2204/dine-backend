@@ -68,7 +68,7 @@ Test coverage:
 
 ```
 # Run full tests with coverage. This will run all tests in dine.
-$ coverage run --source=dine.apps.dine_backend manage.py test
+$ coverage run --source=dine_backend manage.py test
 
 # Generate test report
 $ coverage html

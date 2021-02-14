@@ -1,3 +1,5 @@
+"""Urls for this app"""
+
 from django.urls import path
 from .views import DinnerView
 

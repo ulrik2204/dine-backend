@@ -15,20 +15,34 @@ $ cd dine-backend
 # Install virtualenv, a package to make virtual environments
 $ pip install virtualenv
 
-# Set up virtual environment
+# Set up virtual environment named venv
 $ python3 -m venv venv
+# Activate the venv on Linux/Mac
 $ source venv/bin/activate
+# Activate the venv on Windows
+$ venv/Scripts/activate
 
 # Install dependencies
 $ pip install -r requirements.txt
 
-# Activate and run (do every time)
-$ source venv/bin/activate
+# Run
+$ python manage.py migrate
 $ python manage.py runserver
 
 ```
 
 ## Development
+
+**Everything should be done with the virtual environment active** 
+
+It is activated with:
+```bash
+# On Mac/Linux
+$ source venv/bin/activate
+
+# On Windows
+$ venv/Scrips/activate
+```
 
 ### Changes and dependencies
 
@@ -53,7 +67,7 @@ After making a change to the projects dependencies, add them to requirements.txt
 $ pip freeze > requirements.txt
 ```
 
-Before pushing to GitLab, deactivate the the venv with
+Deactivate the the venv with
 
 ```bash
 $ deactivate
@@ -62,17 +76,20 @@ $ deactivate
 ### Testing
 
 Run tests with
-./manage.py test
+```bash
+$ python manage.py test
+```
 
 Test coverage:
 
 ```bash
-# Run full tests with coverage. This will run all tests in dine.
+# Run all tests with coverage. This will run all tests in dine.
 $ coverage run --source=. manage.py test
-
-# Generate test report
-$ coverage html
 
 # See the test report in command line
 $ coverage report
+
+# Generate test report as html
+$ coverage html
+
 ```

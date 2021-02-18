@@ -7,7 +7,7 @@ The backend for Dine
 To run this project, make sure you have Python 3.9 or higher installed
 To set up and run:
 
-```
+```bash
 # Clone project
 $ git clone https://gitlab.stud.idi.ntnu.no/tdt4140/landsby-3/gruppe-48/dine-backend.git
 $ cd dine-backend
@@ -34,14 +34,14 @@ $ python manage.py runserver
 
 After making changes
 
-```
+```bash
 $ python manage.py makemigrations
 $ python manage.py migrate
 ```
 
 Install new dependencies with
 
-```
+```bash
 $ pip install packagename
 ```
 
@@ -49,13 +49,13 @@ $ pip install packagename
 
 After making a change to the projects dependencies, add them to requirements.txt with
 
-```
+```bash
 $ pip freeze > requirements.txt
 ```
 
 Before pushing to GitLab, deactivate the the venv with
 
-```
+```bash
 $ deactivate
 ```
 
@@ -66,9 +66,9 @@ Run tests with
 
 Test coverage:
 
-```
+```bash
 # Run full tests with coverage. This will run all tests in dine.
-$ coverage run --source=dine_backend manage.py test
+$ coverage run --source=. manage.py test
 
 # Generate test report
 $ coverage html

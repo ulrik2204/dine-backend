@@ -1,6 +1,6 @@
 """Serializers for the database models"""
 from rest_framework import serializers
-from .models import Dinner
+from dine_backend.models import Dinner
 
 
 class DinnerSerializer(serializers.ModelSerializer):

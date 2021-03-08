@@ -15,4 +15,4 @@ class Dinner(models.Model):
     location = models.CharField(max_length=100, null=False)
     owner = models.CharField(max_length=50, null=False)
     description = models.TextField(null=False, default="")
-    allergies = models.ManyToManyField(Allergy)
+    allergies = models.ManyToManyField(Allergy, blank=True)

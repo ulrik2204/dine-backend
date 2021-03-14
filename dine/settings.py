@@ -129,3 +129,5 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_WHITELIST = [
     'https://localhost:3000',
 ]
+
+AUTH_USER_MODEL = 'dine_backend.User'

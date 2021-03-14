@@ -1,6 +1,7 @@
 """The representation and method of the API"""
 
 from rest_framework import generics
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from dine_backend.serializers import AllergySerializer, DinnerSerializer, RegistrationSerializer, UserSerilizer
@@ -58,6 +59,8 @@ def registration_view(request):
             user = serializer.save()
             data['response'] = 'Successfully registered a new user'
             data['username'] = user.username
+            token = Token.objects.get(user=user).key
+            data['token'] = token
         else:
             data = serializer.errors
         return Response(data)

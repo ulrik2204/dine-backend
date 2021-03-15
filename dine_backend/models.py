@@ -1,4 +1,5 @@
 """Database models for dine"""
+from django.db.models.manager import BaseManager
 from dine.settings import AUTH_USER_MODEL
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
@@ -98,11 +99,18 @@ class Dinner(models.Model):
     cuisine = models.CharField(max_length=50, null=False)
     date = models.DateTimeField(null=False)
     location = models.CharField(max_length=100, null=False)
-    owner = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
+    owner = models.OneToOneField(
+        User, null=False, on_delete=models.CASCADE, related_name='+')
     description = models.TextField(default="")
     allergies = models.ManyToManyField(Allergy, blank=True)
+    signed_up_users = models.ManyToManyField(User, blank=True)
 
     class Meta:
-        """Metadaa for the Dinner Model"""
+        """Meta data for the Dinner Model"""
         # Order by the date the dinner will take place
         ordering = ['date']
+
+    def sign_up_user(self, user):
+        """Sign a user up for a dinner"""
+        self.signed_up_users.add(user)
+        return self

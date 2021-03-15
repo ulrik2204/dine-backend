@@ -3,13 +3,13 @@ from rest_framework import serializers
 from dine_backend.models import Allergy, Dinner, User
 
 
-class DinnerSerializer(serializers.ModelSerializer):
-    """Serializer for the dinner model"""
+class UserSerializer(serializers.ModelSerializer):
+    """Serializer for the User model"""
     class Meta:
-        """Meta serializer"""
-        model = Dinner
-        fields = ("id", "dish", "cuisine", "date", "location",
-                  "owner", "description", "allergies")
+        """Meta class for UserSerilizer"""
+        model = User
+        fields = ("id", "username", "first_name",
+                  "last_name", "address", "allergies", "about_me")
 
 
 class AllergySerializer(serializers.ModelSerializer):
@@ -20,13 +20,19 @@ class AllergySerializer(serializers.ModelSerializer):
         fields = ("id", "allergy")
 
 
-class UserSerilizer(serializers.ModelSerializer):
-    """Serializer for the User model"""
+class DinnerSerializer(serializers.ModelSerializer):
+    """Serializer for the dinner model"""
     class Meta:
-        """Meta class for UserSerilizer"""
-        model = User
-        fields = ("id", "username", "first_name",
-                  "last_name", "address", "allergies", "about_me")
+        """Meta serializer"""
+        model = Dinner
+        fields = ("id", "dish", "cuisine", "date", "location",
+                  "owner", "description", "allergies", "signed_up_users")
+
+    def append_user(self, instance, user):
+        """Append the userID to the sined_up_users field in the dinner"""
+        dinner = instance.sign_up_user(user)
+        dinner.save()
+        return dinner
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -59,3 +65,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class DinnerSignUpSerializer(serializers.ModelSerializer):
+    """Serializer for a user to sign up for a dinner"""
+    class Meta:
+        """Metadata"""
+        model = Dinner
+        fields = ('signed_up_users', )

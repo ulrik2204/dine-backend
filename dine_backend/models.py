@@ -101,7 +101,7 @@ class Dinner(models.Model):
     location = models.CharField(max_length=100, null=False)
     owner = models.ForeignKey(
         User, null=False, on_delete=models.CASCADE, related_name='+')
-    description = models.TextField(default="")
+    description = models.TextField(default="", blank=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
     signed_up_users = models.ManyToManyField(User, blank=True)
 

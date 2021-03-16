@@ -1,5 +1,6 @@
 """The representation and method of the API"""
 
+from django.forms.models import model_to_dict
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -103,7 +104,8 @@ def sign_up_for_dinner(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'PUT':
-        serializer = DinnerSerializer(dinnerContext, data=request.data)
+        serializer = DinnerSerializer(
+            data=DinnerSerializer(dinnerContext).data)
         data = {}
         if serializer.is_valid():
             serializer.append_user(dinnerContext, request.user.id)

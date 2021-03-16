@@ -31,8 +31,6 @@ class DinnerSerializer(serializers.ModelSerializer):
     def append_user(self, instance, user):
         """Append the userID to the sined_up_users field in the dinner"""
         dinner = instance.sign_up_user(user)
-        dinner.save()
-        return dinner
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

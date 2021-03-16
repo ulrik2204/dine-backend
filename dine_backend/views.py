@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, BasePermission, SAFE_METHODS
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, BasePermission, SAFE_METHODS
 from rest_framework.response import Response
 from dine_backend.serializers import AllergySerializer, DinnerSerializer, DinnerSignUpSerializer, RegistrationSerializer, UserSerializer
 from dine_backend.models import Allergy, Dinner, User
@@ -18,6 +18,12 @@ class DinnersAllView(generics.ListCreateAPIView):
     queryset = Dinner.objects.all()
     serializer_class = DinnerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def post(self, request, *args, **kwargs):
+        if 'owner' in request.data:
+            request.data.pop('owner')
+        request.data['owner'] = request.user.id
+        return super().post(request, *args, **kwargs)
 
 
 class ReadOrIsDinnerOwner(BasePermission):
@@ -88,6 +94,7 @@ def registration_view(request):
 
 
 @api_view(['PUT', ])
+@permission_classes([IsAuthenticated, ])
 def sign_up_for_dinner(request, pk):
     """The view for signing a user up for dinner"""
     try:
@@ -98,7 +105,7 @@ def sign_up_for_dinner(request, pk):
     if request.method == 'PUT':
         serializer = DinnerSerializer(dinnerContext, data=request.data)
         data = {}
-        if serializer.is_valid:
+        if serializer.is_valid():
             serializer.append_user(dinnerContext, request.user.id)
             data['success'] = 'Successfully signed up user for dinner'
             return Response(data=data)

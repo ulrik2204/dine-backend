@@ -99,7 +99,7 @@ class Dinner(models.Model):
     cuisine = models.CharField(max_length=50, null=False)
     date = models.DateTimeField(null=False)
     location = models.CharField(max_length=100, null=False)
-    owner = models.OneToOneField(
+    owner = models.ForeignKey(
         User, null=False, on_delete=models.CASCADE, related_name='+')
     description = models.TextField(default="")
     allergies = models.ManyToManyField(Allergy, blank=True)

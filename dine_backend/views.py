@@ -39,13 +39,13 @@ class ReadOrIsDinnerOwner(BasePermission):
         return dinner_obj.owner.id == request.user.id
 
 
-class DinnerView(generics.RetrieveAPIView):
+class DinnerView(generics.RetrieveUpdateAPIView):
     """
     The view for a single dinner by their primary key in the databse
     """
     queryset = Dinner.objects.all()
     serializer_class = DinnerSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [ReadOrIsDinnerOwner]
 
 
 class AllergiesAllView(generics.ListAPIView):
@@ -99,16 +99,20 @@ def registration_view(request):
 def sign_up_for_dinner(request, pk):
     """The view for signing a user up for dinner"""
     try:
-        dinnerContext = Dinner.objects.get(id=pk)
+        dinner_context = Dinner.objects.get(id=pk)
     except Dinner.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'PUT':
+        dinner_context_data = DinnerSerializer(dinner_context).data
         serializer = DinnerSerializer(
-            data=DinnerSerializer(dinnerContext).data)
+            data=dinner_context_data)
         data = {}
         if serializer.is_valid():
-            serializer.append_user(dinnerContext, request.user.id)
+            if dinner_context.owner.id == request.user.id:
+                data['detail'] = 'Cannot sign up an owner of a dinner event to its own dinner event'
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            serializer.append_user(dinner_context, request.user.id)
             data['success'] = 'Successfully signed up user for dinner'
             return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

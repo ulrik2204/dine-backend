@@ -1,13 +1,13 @@
 """The representation and method of the API"""
 
-from django.forms.models import model_to_dict
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, BasePermission, SAFE_METHODS
 from rest_framework.response import Response
-from dine_backend.serializers import AllergySerializer, DinnerSerializer, DinnerSignUpSerializer, RegistrationSerializer, UserSerializer
+from rest_framework.views import APIView
+from dine_backend.serializers import AllergySerializer, DinnerSerializer, RegistrationSerializer, UserSerializer
 from dine_backend.models import Allergy, Dinner, User
 
 
@@ -69,11 +69,15 @@ class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    """The view for a single user"""
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+class UserDetailView(APIView):
+    """The view to get a single user by their token"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        """The get method to get a user by their token"""
+        data = {}
+        data['user'] = UserSerializer(request.user).data
+        return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST', ])

@@ -43,9 +43,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         """The meta class"""
         model = User
         fields = ('username', 'first_name', 'last_name',
-                  'address', 'password', "password2")
+                  'address', 'allergies', 'about_me', 'password', 'password2')
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
         }
 
     def save(self):
@@ -61,13 +61,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 {'password': 'Passwords must match.'})
 
         user.set_password(password)
+        if ('about_me' in self.validated_data):
+            user.__setattr__('about_me', self.validated_data['about_me'])
         user.save()
+        if ('allergies' in self.validated_data):
+            allergies = user.__getattribute__('allergies')
+            allergies.set(self.validated_data['allergies'])
         return user
-
-
-class DinnerSignUpSerializer(serializers.ModelSerializer):
-    """Serializer for a user to sign up for a dinner"""
-    class Meta:
-        """Metadata"""
-        model = Dinner
-        fields = ('signed_up_users', )

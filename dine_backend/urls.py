@@ -17,7 +17,7 @@ urlpatterns = [
     path('allergies/', AllergiesAllView.as_view()),
     path('allergies/<int:pk>/', AllergyView.as_view()),
     path('users/', UserListView.as_view()),
-    path('users/<int:pk>/', UserDetailView.as_view()),
+    path('users/getbytokenheader/', UserDetailView.as_view()),
     path('users/register/', registration_view, name='register'),
     path('users/login/', obtain_auth_token, name='login'),
 ]

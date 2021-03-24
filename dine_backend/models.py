@@ -53,9 +53,9 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=100, unique=True, null=True)
     first_name = models.CharField(max_length=30, null=False)
     last_name = models.CharField(max_length=30, null=False)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100, null=False)
     allergies = models.ManyToManyField(Allergy, blank=True)
-    about_me = models.TextField(default="")
+    about_me = models.TextField(default="", blank=True)
 
     # Required fields for custom user
     date_joined = models.DateTimeField(

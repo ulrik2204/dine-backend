@@ -69,7 +69,13 @@ class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class UserDetailView(APIView):
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+
+class UserByTokenView(APIView):
     """The view to get a single user by their token"""
     permission_classes = [IsAuthenticated]
 

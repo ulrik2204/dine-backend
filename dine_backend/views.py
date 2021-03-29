@@ -1,14 +1,17 @@
 """The representation and method of the API"""
 
-from rest_framework import generics
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, BasePermission, SAFE_METHODS
+from rest_framework.permissions import (SAFE_METHODS, AllowAny, BasePermission,
+                                        IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from dine_backend.serializers import AllergySerializer, DinnerSerializer, RegistrationSerializer, UserSerializer
+
 from dine_backend.models import Allergy, Dinner, User
+from dine_backend.serializers import (AllergySerializer, DinnerSerializer,
+                                      RegistrationSerializer, UserSerializer)
 
 
 class DinnersAllView(generics.ListCreateAPIView):
@@ -93,15 +96,18 @@ def registration_view(request):
     if request.method == 'POST':
         serializer = RegistrationSerializer(data=request.data)
         data = {}
-        if serializer.is_valid():
+        boo = serializer.is_valid()
+        if boo:
             user = serializer.save()
             data['response'] = 'Successfully registered a new user'
             data['username'] = user.username
             token = Token.objects.get(user=user).key
             data['token'] = token
+            # This should be 201, but the frontend is not updated for that
+            return Response(data, status=status.HTTP_200_OK)
         else:
             data = serializer.errors
-        return Response(data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT', ])

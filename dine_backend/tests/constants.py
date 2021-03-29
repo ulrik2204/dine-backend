@@ -1,10 +1,11 @@
 USER_1 = {
-    "username": "ulrikro",
-    "first_name": "Ulrik",
-    "last_name": "Roesby",
-    "address": "Njords veg 13",
+    "username": "test_user",
+    "first_name": "Ola",
+    "last_name": "Nordmann",
+    "address": "EnAdresse",
     "password": "password",
-    "password2": "password"
+    "password2": "password",
+    "allergies": [5, 9]
 }
 
 DINNER_1 = {

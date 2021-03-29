@@ -23,11 +23,19 @@ class DinnersAllView(generics.ListCreateAPIView):
     serializer_class = DinnerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def post(self, request, *args, **kwargs):
-        if 'owner' in request.data:
-            request.data.pop('owner')
-        request.data['owner'] = request.user.id
-        return super().post(request, *args, **kwargs)
+    def get_serializer(self, *args, **kwargs):
+        """Overriding the get_serializer method to ensure the owner of the dinner is the logged in user"""
+        # Left inteact
+        if self.request.method in SAFE_METHODS:
+            return super().get_serializer(*args, **kwargs)
+        serializer_class = self.get_serializer_class()
+        kwargs["context"] = self.get_serializer_context()
+
+        # Make a deep copy of request.data, override the "owner" key value
+        draft_request_data = self.request.data.copy()
+        draft_request_data["owner"] = self.request.user.id
+        kwargs["data"] = draft_request_data
+        return serializer_class(*args, **kwargs)
 
 
 class ReadOrIsDinnerOwner(BasePermission):

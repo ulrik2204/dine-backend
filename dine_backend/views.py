@@ -1,14 +1,17 @@
 """The representation and method of the API"""
 
-from rest_framework import generics
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, BasePermission, SAFE_METHODS
+from rest_framework.permissions import (SAFE_METHODS, AllowAny, BasePermission,
+                                        IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from dine_backend.serializers import AllergySerializer, DinnerSerializer, RegistrationSerializer, UserSerializer
+
 from dine_backend.models import Allergy, Dinner, User
+from dine_backend.serializers import (AllergySerializer, DinnerSerializer,
+                                      RegistrationSerializer, UserSerializer)
 
 
 class DinnersAllView(generics.ListCreateAPIView):
@@ -20,11 +23,19 @@ class DinnersAllView(generics.ListCreateAPIView):
     serializer_class = DinnerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def post(self, request, *args, **kwargs):
-        if 'owner' in request.data:
-            request.data.pop('owner')
-        request.data['owner'] = request.user.id
-        return super().post(request, *args, **kwargs)
+    def get_serializer(self, *args, **kwargs):
+        """Overriding the get_serializer method to ensure the owner of the dinner is the logged in user"""
+        # Left inteact
+        if self.request.method in SAFE_METHODS:
+            return super().get_serializer(*args, **kwargs)
+        serializer_class = self.get_serializer_class()
+        kwargs["context"] = self.get_serializer_context()
+
+        # Make a deep copy of request.data, override the "owner" key value
+        draft_request_data = self.request.data.copy()
+        draft_request_data["owner"] = self.request.user.id
+        kwargs["data"] = draft_request_data
+        return serializer_class(*args, **kwargs)
 
 
 class ReadOrIsDinnerOwner(BasePermission):
@@ -93,15 +104,18 @@ def registration_view(request):
     if request.method == 'POST':
         serializer = RegistrationSerializer(data=request.data)
         data = {}
-        if serializer.is_valid():
+        boo = serializer.is_valid()
+        if boo:
             user = serializer.save()
             data['response'] = 'Successfully registered a new user'
             data['username'] = user.username
             token = Token.objects.get(user=user).key
             data['token'] = token
+            # This should be 201, but the frontend is not updated for that
+            return Response(data, status=status.HTTP_200_OK)
         else:
             data = serializer.errors
-        return Response(data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT', ])

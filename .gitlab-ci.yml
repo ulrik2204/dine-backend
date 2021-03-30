@@ -45,5 +45,5 @@ before_script:
 
 test:
   script:
-    - coverage run --source=. manage.py test
+    - coverage run --source=dine_backend manage.py test
     - coverage report

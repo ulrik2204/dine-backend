@@ -1,5 +1,6 @@
 """Serializers for the database models"""
 from rest_framework import serializers
+
 from dine_backend.models import Allergy, Dinner, User
 
 
@@ -45,7 +46,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ('username', 'first_name', 'last_name',
                   'address', 'allergies', 'about_me', 'password', 'password2')
         extra_kwargs = {
-            'password': {'write_only': True},
+            'username': {'required': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+            'address': {'required': True},
+            'password': {'write_only': True, 'required': True},
         }
 
     def save(self):

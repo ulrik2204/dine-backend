@@ -16,9 +16,6 @@ class DinnerPostTest(APITestCase):
         # Creating the user
         response = client.post("/api/users/register/", USER_1)
         cls.userToken = response.data["token"]
-        cls.auth_headers = {
-            "HTTP_AUTHORIZATION": "Token " + response.data['token']
-        }
         super().setUpTestData()
 
     def setUp(self):

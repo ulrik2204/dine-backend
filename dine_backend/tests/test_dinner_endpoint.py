@@ -111,7 +111,7 @@ class DinnerPostTest(APITestCase):
         response = self.client.post(
             '/api/dinners/', testDinner
         )
-        # The status code should be 201j
+        # The status code should be 201
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Check that all dinners created now have owner 1
@@ -123,7 +123,7 @@ class DinnerPostTest(APITestCase):
                 all1 = False
                 break
         self.assertTrue(
-            all1, msg="The owner set whenb specifying the owner was not the user")
+            all1, msg="The owner set when specifying the owner was not the user")
 
     def test_post_dinner_without_location(self):
         """Testing sending adinner without location"""
@@ -141,7 +141,7 @@ class DinnerPostTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_dinner_when_not_logged_in(self):
-        """Testing sending adinner without location"""
+        """Testing sending a dinner without location"""
         testDinner = {
             "dish": "Spaghetti",
             "cuisine": "Italiensk",

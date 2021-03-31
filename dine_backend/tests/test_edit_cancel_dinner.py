@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 
-@skip
 class EditDinnerTest(APITestCase):
 
     @classmethod
@@ -31,8 +30,8 @@ class EditDinnerTest(APITestCase):
             'dish': 'Carbonara med bacon'
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_201_CREATED)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have taken effect:
         # Creating a deep dopy of DINNER_1
@@ -50,8 +49,8 @@ class EditDinnerTest(APITestCase):
             'cuisine': 'Annet'
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_201_CREATED)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have taken effect:
         # Creating a deep dopy of DINNER_1
@@ -66,11 +65,11 @@ class EditDinnerTest(APITestCase):
     def test_edit_correct_date(self):
         """Test that a correct request editing the date works"""
         changeDinner = {
-            'date': '2021-05-17T16:00Z'
+            'date': '2021-05-17T16:00:00Z'
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_201_CREATED)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have taken effect:
         # Creating a deep dopy of DINNER_1
@@ -88,7 +87,7 @@ class EditDinnerTest(APITestCase):
             'date': '2021.11'
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
         self.assertEqual(put_response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Check that the changes have taken effect:
@@ -107,8 +106,8 @@ class EditDinnerTest(APITestCase):
             'location': 'Galdhøpiggen'
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_201_CREATED)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have taken effect:
         # Creating a deep dopy of DINNER_1
@@ -126,8 +125,8 @@ class EditDinnerTest(APITestCase):
             'description': 'Dette er en fin middag'
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_201_CREATED)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have taken effect:
         # Creating a deep dopy of DINNER_1
@@ -145,15 +144,15 @@ class EditDinnerTest(APITestCase):
             'allergies': [1, 2, 3]
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_201_CREATED)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have taken effect:
         # Creating a deep dopy of DINNER_1
         expected = {}
         for key in DINNER_1:
             expected[key] = DINNER_1[key]
-        expected['allegies'] = changeDinner['allergies']
+        expected['allergies'] = changeDinner['allergies']
         get_response = self.client.get('/api/dinners/1/')
         self.assertEqual(expected, get_response.data,
                          msg="The data was not changed as expected")
@@ -172,7 +171,7 @@ class EditDinnerTest(APITestCase):
         expected = {}
         for key in DINNER_1:
             expected[key] = DINNER_1[key]
-        expected['allegies'] = changeDinner['allergies']
+        expected['allergies'] = changeDinner['allergies']
         get_response = self.client.get('/api/dinners/1/')
         self.assertNotEqual(expected, get_response.data,
                             msg="The data was changed, which was not expected")
@@ -183,7 +182,7 @@ class EditDinnerTest(APITestCase):
             'owner': 2
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
         self.assertEqual(put_response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Check that the changes have not taken effect:
@@ -222,8 +221,8 @@ class EditDinnerTest(APITestCase):
             'id': 4
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_400_BAD_REQUEST)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have not taken effect:
         # Creating a deep dopy of DINNER_1
@@ -233,15 +232,18 @@ class EditDinnerTest(APITestCase):
         expected['id'] = changeDinner['id']
         get_response = self.client.get('/api/dinners/4/')
         self.assertEqual(get_response.status_code, status.HTTP_404_NOT_FOUND)
+        get_dinner = self.client.get('/api/dinners/1/')
+        self.assertEqual(DINNER_1, get_dinner.data,
+                         msg="The recieved dinner after editing id was not as expected")
 
-    def test_edit_iscanceled_should_not_work(self):
-        """Testing that an attempt to edit owner does not work"""
+    def test_edit_iscanceled_should_work(self):
+        """Testing that an attempt to edit is_canceled field should work"""
         changeDinner = {
             'is_canceled': True
         }
         # Changing the dinner
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_400_BAD_REQUEST)
+        put_response = self.client.patch('/api/dinners/1/', changeDinner)
+        self.assertEqual(put_response.status_code, status.HTTP_200_OK)
 
         # Check that the changes have not taken effect:
         # Creating a deep dopy of DINNER_1
@@ -275,8 +277,9 @@ class EditDinnerTest(APITestCase):
         }
         # Trying to change that dinner that has another user
         self.client.defaults['HTTP_AUTHORIZATION'] = f"Token {self.userToken}"
-        put_response = self.client.put('/api/dinners/1/', changeDinner)
-        self.assertEqual(put_response.status_code, status.HTTP_400_BAD_REQUEST)
+        patch_response = self.client.patch('/api/dinners/2/', changeDinner)
+        self.assertEqual(patch_response.status_code,
+                         status.HTTP_403_FORBIDDEN)
 
         # Check that the changes have not taken effect:
         # Creating a deep dopy of DINNER_2

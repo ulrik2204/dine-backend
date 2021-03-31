@@ -1,9 +1,9 @@
 """Database models for dine"""
-from django.db.models.manager import BaseManager
 from dine.settings import AUTH_USER_MODEL
+from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.conf import settings
+from django.db.models.manager import BaseManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
@@ -104,6 +104,7 @@ class Dinner(models.Model):
     description = models.TextField(default="", blank=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
     signed_up_users = models.ManyToManyField(User, blank=True)
+    is_canceled = models.BooleanField(blank=True, default=False)
 
     class Meta:
         """Meta data for the Dinner Model"""

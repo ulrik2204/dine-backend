@@ -4,7 +4,7 @@ from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import (SAFE_METHODS, AllowAny, BasePermission,
-                                        IsAuthenticated,
+                                        IsAdminUser, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -80,10 +80,10 @@ class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class UserDetailView(generics.RetrieveAPIView):
+class UserDetailView(generics.RetrieveDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
 
 
 class UserByTokenView(APIView):
@@ -94,6 +94,17 @@ class UserByTokenView(APIView):
         """The get method to get a user by their token"""
         data = {}
         data['user'] = UserSerializer(request.user).data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class UserIsAdminView(APIView):
+    """The view to determine if the logged in user is admin"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        """Get if the user is admin of not"""
+        data = {}
+        data['is_admin'] = request.user.is_superuser
         return Response(data, status=status.HTTP_200_OK)
 
 

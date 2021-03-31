@@ -23,7 +23,7 @@ DINNER_1 = {
     "id": 1,
     "dish": "Carbonara amazing",
     "cuisine": "Italiensk",
-    "date": "2021-04-19T11:11Z",
+    "date": "2021-04-19T11:11:00Z",
     "location": "Oslo",
     "owner": 1,  # The owner that will be assigned
     "description": "Dette er en beskrivelse",
@@ -36,7 +36,7 @@ DINNER_2 = {
     "id": 2,
     "dish": "Spaghetti bolognese",
     "cuisine": "Italiensk",
-    "date": "2021-04-19T11:11Z",
+    "date": "2021-04-19T11:11:00Z",
     "location": "Oslo",
     "owner": 1,  # The owner that will be assigned
     "description": "",

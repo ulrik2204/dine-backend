@@ -27,7 +27,7 @@ class DinnerSerializer(serializers.ModelSerializer):
         """Meta serializer"""
         model = Dinner
         fields = ("id", "dish", "cuisine", "date", "location",
-                  "owner", "description", "allergies", "signed_up_users")
+                  "owner", "description", "allergies", "signed_up_users", "is_canceled")
 
     def append_user(self, instance, user):
         """Append the userID to the sined_up_users field in the dinner"""

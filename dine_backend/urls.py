@@ -4,7 +4,7 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 
 from dine_backend.views import (AllergiesAllView, AllergyView, DinnersAllView,
-                                DinnerView, UserByTokenView, UserDetailView,
+                                DinnerView, UserByTokenView, UserDetailView, UserIsAdminView,
                                 UserListView, registration_view,
                                 sign_up_for_dinner)
 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('users/', UserListView.as_view()),
     path('users/<int:pk>/', UserDetailView.as_view()),
     path('users/getbytokenheader/', UserByTokenView.as_view()),
+    path('users/isadmin/', UserIsAdminView.as_view()),
     path('users/register/', registration_view, name='register'),
     path('users/login/', obtain_auth_token, name='login'),
 ]

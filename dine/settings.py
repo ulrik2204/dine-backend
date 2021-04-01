@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
+import django_on_heroku
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -58,6 +60,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -135,7 +138,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+PROJECT_ROOT = os.path.join(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
+
+# Extra lookup directories for collectstatic to find static files
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
+
+#  Add configuration for static files storage using whitenoise
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # we whitelist localhost:3000 because that's where frontend will be served
 CORS_ORIGIN_WHITELIST = [
@@ -143,3 +156,14 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 AUTH_USER_MODEL = 'dine_backend.User'
+
+# Setting up heroku
+django_on_heroku.settings(locals())
+
+# Databases
+prod_db = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db)
+
+# App domain name
+ALLOWED_HOSTS = ['https://dine-backend.herokuapp.com/',
+                 'dine-backend.herokuapp.com']

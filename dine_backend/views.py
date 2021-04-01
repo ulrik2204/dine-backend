@@ -80,10 +80,22 @@ class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
+class IsAdminOrReadOnly(BasePermission):
+    """Permission of the user is admin or if the user only wants to read"""
+
+    def has_object_permission(self, request, view, user_obj):
+        """A user has always permission read, but only to change the object if the user owns it"""
+        # If it is a GET, OPTION or HEAD (a safe method) request, it is ok
+        if request.method in SAFE_METHODS:
+            return True
+        # If it is a PATCH of PUT request, the user has to be the owner
+        return request.user.is_superuser
+
+
 class UserDetailView(generics.RetrieveDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class UserByTokenView(APIView):

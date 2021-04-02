@@ -159,7 +159,7 @@ CORS_ORIGIN_WHITELIST = [
 AUTH_USER_MODEL = 'dine_backend.User'
 
 # Setting up heroku
-django_on_heroku.settings(locals())
+django_on_heroku.settings(locals(), test_runner=False)
 
 # Databases
 prod_db = dj_database_url.config(conn_max_age=500)

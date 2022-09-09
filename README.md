@@ -5,6 +5,7 @@ The backend for Dine
 ## Getting started
 
 To run this project, make sure you have Python 3.9 or higher installed
+You also have to create a .env file, which if you runa development environment, can be a copy of `.env.example`.
 To set up and run:
 
 ```bash
@@ -25,6 +26,8 @@ $ venv/Scripts/activate
 # Install dependencies
 $ pip install -r requirements.txt
 
+# Set up dev database (requires docker installed)
+$ sh ./scripts/devdb.sh
 # Run
 $ python manage.py migrate
 $ python manage.py runserver
